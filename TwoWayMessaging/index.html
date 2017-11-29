@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TEST HTML</title>
+        <script type="text/javascript" src="options.js"></script>
+        <style type="text/css">
+        	.income{
+        		display: inline-block;
+        		height: 100px;
+        		width: 200px;
+        		background-color: red;
+        		border: 1px black solid;
+        	}
+
+        	.flash{
+        		background-color: lime;
+        	}
+
+        	.backgtound{
+        		background-color: blue;
+        	}
+
+        	.titleblock{
+        		border: 1px black solid;
+				display: inline-block;
+        		width: 200px;
+        	}
+
+        </style>
+    </head>
+<body>
+	Hello! 
+	<p>
+		1) open <a href="http://localhost:8000">localhost</a> with inspector	
+		<br>
+		There are 2 types of messages:
+		<br>
+		- from page js (can be injected from content script)
+		<br>
+		- from content script directly (works in chromium but are blocked here)
+	</p>	
+	<p>
+		2) open backgroung page	with inspector
+	</p>
+	<p>
+		3) open option page	with inspector (this page)
+	</p>
+<div>
+	<div class="titleblock">extension.onMessage</div><div class="titleblock">runtime.onMessage</div>
+	<br>
+	<div class="income" id="inject_em">from inject (externally_connectable)</div><div class="income" id="inject_rm">from inject (externally_connectable)</div>
+	<br>
+	<div class="income" id="backgtound_em">from backgtound</div><div class="income" id="backgtound_rm">from backgtound</div>
+	<br>
+	<div class="income" id="backgtound2_em">from backgtound2</div><div class="income" id="backgtound2_rm">from backgtound2</div>
+	<br>
+	<div class="income" id="content_em">from content</div><div class="income" id="content_rm">from content</div>
+	<br>
+	<div class="income" id="undef_em">undefined</div><div class="income" id="undef_rm">undefined</div>
+
+</div>
+</body>
+</html>
