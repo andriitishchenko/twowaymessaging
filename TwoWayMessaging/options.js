@@ -14,6 +14,12 @@
         backgtound2_em = document.getElementById("backgtound2_em");
         content_em = document.getElementById("content_em");
         undef_em = document.getElementById("undef_em");
+
+
+        broadcast_msg_button = document.getElementById("broadcast_msg_button");
+        broadcast_msg_button.addEventListener("click", sender => {
+            sendToAllTabs();
+        });
     }
 
     // request data
@@ -42,7 +48,7 @@
     function sentRuntimeMessage() {
         chrome.runtime.sendMessage({
             "from": 'options',
-            "cmd": 3,
+            "cmd": 3, //just for test
             "data": { "TYPE": "chrome.runtime.sendMessage" }
         }, response => {
             console.log("CALLBACK:");
@@ -50,6 +56,17 @@
         });
     }
 
+    function sendToAllTabs() {
+        chrome.tabs.query({},
+            tabs => {
+                for (let tab of tabs) {
+                    chrome.tabs.sendMessage(tab.id, { from: 'options', subject: "chrome.tabs.sendMessage", type: "POST BROADCAST" }, response => {
+                        console.log("CALLBACK:");
+                        console.log(response);
+                    });
+                }
+            });
+    }
 
     //sending messages
     var selfid =

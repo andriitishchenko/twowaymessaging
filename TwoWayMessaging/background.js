@@ -17,7 +17,7 @@
 
         console.log(str);
         messageToContent();
-        
+
         setTimeout(function() {
             sendToActiveTab();
         }, 500);
@@ -41,7 +41,7 @@
         chrome.runtime.sendMessage({
             from: 'background',
             subject: 'chrome.runtime.sendMessage',
-            type: "POST TO RUNTIME" 
+            type: "POST TO RUNTIME"
         });
     }
 
@@ -60,7 +60,7 @@
                     case cmd.GETUUIDCALLBACK:
                         getUUID(sendResponse);
                     case cmd.SENTMSG:
-                        sendResponse({ "from_background": "onMessageExternal",type: "CALLBACK"});
+                        sendResponse({ "from_background": "onMessageExternal", type: "CALLBACK" });
                         break;
                         break;
                     default:
@@ -68,7 +68,7 @@
                 }
             }
             if (sendResponse) {
-                sendResponse({ "from_background": "onMessageExternal",type: "CALLBACK"});
+                sendResponse({ "from_background": "onMessageExternal", type: "CALLBACK" });
             }
             return true;
         });
@@ -81,7 +81,7 @@
             "from a content script:" + sender.tab.url :
             "from the extension");
         if (sendResponse) {
-            sendResponse({ from: 'from_background', subject: "extension.onMessage",type: "CALLBACK" });
+            sendResponse({ from: 'from_background', subject: "extension.onMessage", type: "CALLBACK" });
         }
     });
     // retriving messages from internal extension pages 
@@ -92,7 +92,7 @@
             "from a content script:" + sender.tab.url :
             "from the extension");
         if (sendResponse) {
-            sendResponse({ from: 'from_background', subject: "runtime.onMessage",type: "CALLBACK" });
+            sendResponse({ from: 'from_background', subject: "runtime.onMessage", type: "CALLBACK" });
         }
     });
 
@@ -100,7 +100,7 @@
         callback(thisID);
     }
 
-    function sendToActiveTab(){
+    function sendToActiveTab() {
         //send message to last active
         chrome.tabs.query({
             'active': true,
@@ -111,21 +111,23 @@
                 return;
             }
             console.log(tabs);
-            chrome.tabs.sendMessage(tabs[0].id, {from: 'background2', subject: "chrome.tabs.sendMessage", type: "POST TO ACTIVE" }, r => {
-                console.log(r);
+            chrome.tabs.sendMessage(tabs[0].id, { from: 'background2', subject: "chrome.tabs.sendMessage", type: "POST TO ACTIVE" }, response => {
+                console.log("CALLBACK:");
+                console.log(response);
             });
         });
     }
 
-    function sendToAllTabs(){
-        chrome.tabs.query({}, 
+    function sendToAllTabs() {
+        chrome.tabs.query({},
             tabs => {
                 for (let tab of tabs) {
-                     chrome.tabs.sendMessage(tab.id, {from: 'background2', subject: "chrome.tabs.sendMessage", type: "POST BROADCAST" }, r => {
-                        console.log(r);
+                    chrome.tabs.sendMessage(tab.id, { from: 'background2', subject: "chrome.tabs.sendMessage", type: "POST BROADCAST" }, response => {
+                        console.log("CALLBACK:");
+                        console.log(response);
                     });
                 }
-        });
+            });
     }
 
 })();
