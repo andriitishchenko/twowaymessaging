@@ -1,5 +1,5 @@
 (function() {
-
+    //utils
     window.cmd = window.cmd || {
         GETUUIDCALLBACK: 1,
         SENTMSG: 2,
@@ -7,30 +7,23 @@
     }
 
     var timeDelaySec = 5;
-    var selfName = "BACKGROUND ";
     var thisID = guid();
-    var str = selfName + " = " + thisID;
+    var str = "BACKGROUND = " + thisID;
     var myVar = setInterval(myTimer, timeDelaySec * 1000);
 
+    //lets send messages by timer
     function myTimer() {
         var d = new Date();
 
         console.log(str);
-        messageToContent(selfName, { "id": thisID });
+        messageToContent("POST", { "id": thisID });
 
         setTimeout(function() {
-            messageToContent2(selfName, { "id2": thisID });
+            messageToContent2("POST", { "id2": thisID });
         }, 500);
-
-
-        try {
-            chrome.good.logger.log(1, str);
-        } catch (e) {
-            // console.log(e);        
-        }
     }
 
-
+    //utils
     function guid() {
         function _p8(s) {
             var p = (Math.random().toString(16) + "000000000").substr(2, 8);
@@ -39,30 +32,39 @@
         return _p8() + _p8(true) + _p8(true) + _p8();
     }
 
-    function messageToContent(data, json) {
+    //send message to all
+    function messageToContent(type, json) {
         chrome.runtime.sendMessage({
             from: 'background',
-            subject: 'custom BG Demo Object',
-            data: data,
+            subject: 'chrome.runtime.sendMessage',
+            type: type,
             json: json
         });
     }
 
-
+    //send message to active tab 
     function messageToContent2(data, json) {
         //switch focus to other window to test this type of messages
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            if (tabs.length == 0) {
+                console.log("Chnage focus to other Chromium tab!");
+                return;
+            }
             chrome.tabs.sendMessage(tabs[0].id, {
                 from: 'background2',
-                subject: 'custom BG Demo Object2',
+                subject: 'chrome.tabs.query',
                 data: data,
                 json: json
-            }, function(response) {
+            }, response => {
                 console.log(response);
             });
         });
     }
 
+
+
+    // retriving messages from WEB Page, Content and 
+    // cases when specified extension ID as reciever
     chrome.runtime.onMessageExternal.addListener(
         function(request, sender, sendResponse) {
             console.log("runtime.onMessageExternal");
@@ -88,7 +90,8 @@
             }
             return true;
         });
-    // ===
+
+    // retriving messages from internal extension pages (Options, etc)
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         console.log("extension.onMessage");
         console.log(request);
@@ -96,10 +99,10 @@
             "from a content script:" + sender.tab.url :
             "from the extension");
         if (sendResponse) {
-            sendResponse({ "from_background": "extension.onMessage" });
+            sendResponse({ from: 'from_background', subject: "extension.onMessage",type: "CALLBACK" });
         }
     });
-
+    // retriving messages from internal extension pages 
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         console.log("runtime.onMessage");
         console.log(request);
@@ -107,29 +110,20 @@
             "from a content script:" + sender.tab.url :
             "from the extension");
         if (sendResponse) {
-            sendResponse({ "from_background": "runtime.onMessage" });
+            sendResponse({ from: 'from_background', subject: "runtime.onMessage",type: "CALLBACK" });
         }
     });
 
-    ////======
-    // function getText(data, callback) {
-    //     console.log(data);
-    //     callback("This is responce from backgrount");
-    // }
-
-
     function getUUID(callback) {
         callback(thisID);
-        
-
         //send message to last active
         chrome.tabs.query({
             'active': true,
             'lastFocusedWindow': true
-        }, function(tabs) {
+        }, tabs => {
             console.log(tabs);
-            chrome.tabs.sendMessage(tabs[0].id, {test:"test"}, function(r) {
-              console.log(r);
+            chrome.tabs.sendMessage(tabs[0].id, {from: 'from_background', subject: "chrome.tabs.sendMessage", type: "POST" }, r => {
+                console.log(r);
             });
         });
         return;

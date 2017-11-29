@@ -2,18 +2,6 @@
 
     var timeDelaySec = 5;
 
-    var inject_rm = document.getElementById("inject_rm");
-    var backgtound_rm = document.getElementById("backgtound_rm");
-    var backgtound2_rm = document.getElementById("backgtound2_rm");
-    var content_rm = document.getElementById("content_rm");
-    var undef_rm = document.getElementById("undef_rm");
-
-    var inject_em = document.getElementById("inject_em");
-    var backgtound_em = document.getElementById("backgtound_em");
-    var backgtound2_em = document.getElementById("backgtound2_em");
-    var content_em = document.getElementById("content_em");
-    var undef_em = document.getElementById("undef_em");
-
     window.onload = function() {
         inject_rm = document.getElementById("inject_rm");
         backgtound_rm = document.getElementById("backgtound_rm");
@@ -38,7 +26,7 @@
             "from": 'options',
             "cmd": 3,
             "data": { "TYPE": "chrome.runtime.sendMessage" }
-        }, function(response) {
+        }, response => {
             console.log(response);
         });
     }
@@ -58,8 +46,8 @@
 
     //sending messages
     var selfid =
-        // "kndpglafofpainnmogckdkmfbimanbeh";
-        "fakieblpcehflecaegeonegkaaedcdhk";
+        "kndpglafofpainnmogckdkmfbimanbeh"; //for shiped PEM
+        // "fakieblpcehflecaegeonegkaaedcdhk";
 
     function reguest(cmd, data) {
         return new Promise((resolve, reject) => {

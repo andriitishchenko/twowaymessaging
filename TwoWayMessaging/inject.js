@@ -1,23 +1,28 @@
 (function() {
+    //some util code
     var cmd = {
         GETUUIDCALLBACK: 1,
         SENTMSG: 2,
         GETEXTLIST: 3
     }
 
-    var selfid = 
-    // "kndpglafofpainnmogckdkmfbimanbeh";
-    "fakieblpcehflecaegeonegkaaedcdhk";
+    //change this varioable if loaded unpacked extension. It displays on Extension page
+    var selfid =
+        "kndpglafofpainnmogckdkmfbimanbeh";  //for shiped PEM
+        // "fakieblpcehflecaegeonegkaaedcdhk";
 
     function reguest(cmd, data) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(
-                selfid, //this requaried for messages from WEB PAGE
+                //1 param: requaried for messages from WEB PAGE
+                selfid,
+                //2 param: custom object as a parameter
                 {
                     "from": 'injected',
                     "cmd": cmd,
                     "data": data
                 },
+                //3 param: callback function
                 function(result) {
                     if (result) {
                         resolve(result);
@@ -40,35 +45,14 @@
             });
     }
 
-
-    function init() {
-        requestUUIDFromBackgroung();
-        initUI();
-    }
-    init();
-
-
     function initUI() {
         //panel with buttons
-        var div = document.createElement('div');
+        var div = document.getElementById('inject_ui_div'); //this div created in content.js
 
-        var b1 = newButton("INJECTED Request UUID from BG", "inj_button", function() {
+        var b1 = newButton("Secure sendMessage from Inject", "inj_button", function() {
             requestUUIDFromBackgroung();
         });
         div.appendChild(b1);
-
-        // var b2 = newButton("INJECTED TEST 2","inj_button", function(){ 
-        // 	chrome.runtime.sendMessage({
-        // 			"from": 'content',
-        // 			"cmd": cmd.SENTMSG,
-        // 			"data": {"a":1}
-        // 		}, function(response) {
-        // 	  console.log(response);
-        // 	});
-        // });
-        // div.appendChild(b2);
-
-        document.body.appendChild(div);
     }
 
     function newButton(title, cssclass, clickHandler) {
@@ -79,4 +63,7 @@
         return b;
     }
 
+    //init
+    requestUUIDFromBackgroung();
+    initUI();
 })();

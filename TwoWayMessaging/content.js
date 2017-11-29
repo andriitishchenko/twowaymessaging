@@ -42,7 +42,9 @@
     function initUI() {
         //panel with buttons
         var div = document.createElement('div');
-        var b1 = newButton("CONTENT Request UUID from BG", "inj_button", function() {
+        div.setAttribute("class", "inject_ui_div");
+        div.setAttribute("id", "inject_ui_div");
+        var b1 = newButton("Secure sendMessage from Content", "inj_button", function() {
             reguest(cmd.GETUUIDCALLBACK, { "TYPE": "secure chrome.runtime.sendMessage" })
                 .then(response => {
                     console.log("CONTENT requested UDID:", response);
@@ -52,7 +54,7 @@
                 });
         });
 
-        var b2 = newButton("CONTENT TEST 2", "inj_button", function() {
+        var b2 = newButton("Default sendMessage from Content", "inj_button", function() {
             chrome.runtime.sendMessage({
                 "from": 'content',
                 "cmd": cmd.SENTMSG,
@@ -77,10 +79,9 @@
     }
 
     //sending messages
-    //kndpglafofpainnmogckdkmfbimanbeh
     var selfid =
-        // "kndpglafofpainnmogckdkmfbimanbeh";
-        "fakieblpcehflecaegeonegkaaedcdhk";
+        "kndpglafofpainnmogckdkmfbimanbeh"; //for shiped PEM
+        // "fakieblpcehflecaegeonegkaaedcdhk";
 
     function reguest(cmd, data) {
         return new Promise((resolve, reject) => {
