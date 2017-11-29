@@ -15,11 +15,11 @@ To make it works its requaried to edit manifest and specify the https://whitelis
 
 2) open https://localhost, there are added 3 buttons at the top
 
-2.1) open with debugger  https://localhost, you should see logs from inject script and content script;
+3) open with debugger  https://localhost, you should see logs from inject script and content script
 
-3) open with debugger inspector background page
+4) open with debugger inspector background page
 
-4) open with debugger inspector options page
+5) open with debugger inspector options page
 
 You should see logs on messages events.
 Try click the buttons on the localhost page and see results in content and background.
