@@ -8,8 +8,8 @@
 
     //change this varioable if loaded unpacked extension. It displays on Extension page
     var selfid =
-        "kndpglafofpainnmogckdkmfbimanbeh";  //for shiped PEM
-        // "fakieblpcehflecaegeonegkaaedcdhk";
+        "kndpglafofpainnmogckdkmfbimanbeh"; //for shiped PEM
+    // "fakieblpcehflecaegeonegkaaedcdhk";
 
     function reguest(cmd, data) {
         return new Promise((resolve, reject) => {
@@ -38,7 +38,8 @@
     function requestUUIDFromBackgroung() {
         reguest(cmd.GETUUIDCALLBACK, { "TYPE": "secure chrome.runtime.sendMessage" })
             .then(response => {
-                console.log("INJECT requested UDID:", response);
+                console.log("CALLBACK:");
+                console.log(response);
             })
             .catch(e => {
                 console.log(e);

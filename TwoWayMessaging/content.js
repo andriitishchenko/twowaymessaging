@@ -47,7 +47,8 @@
         var b1 = newButton("Secure sendMessage from Content", "inj_button", function() {
             reguest(cmd.GETUUIDCALLBACK, { "TYPE": "secure chrome.runtime.sendMessage" })
                 .then(response => {
-                    console.log("CONTENT requested UDID:", response);
+                    console.log("CALLBACK:");
+                    console.log(response);
                 })
                 .catch(e => {
                     console.log(e);
@@ -59,14 +60,14 @@
                 "from": 'content',
                 "cmd": cmd.SENTMSG,
                 "data": { "TYPE": "chrome.runtime.sendMessage" }
-            }, function(response) {
+            }, response => {
+                console.log("CALLBACK:");
                 console.log(response);
             });
         });
 
         div.appendChild(b1);
         div.appendChild(b2);
-
         document.body.appendChild(div);
     }
 
@@ -81,7 +82,7 @@
     //sending messages
     var selfid =
         "kndpglafofpainnmogckdkmfbimanbeh"; //for shiped PEM
-        // "fakieblpcehflecaegeonegkaaedcdhk";
+    // "fakieblpcehflecaegeonegkaaedcdhk";
 
     function reguest(cmd, data) {
         return new Promise((resolve, reject) => {

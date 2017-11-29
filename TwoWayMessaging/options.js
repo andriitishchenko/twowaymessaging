@@ -16,27 +16,22 @@
         undef_em = document.getElementById("undef_em");
     }
 
-
     // request data
     var myVar = setInterval(myTimer, timeDelaySec * 1000);
 
     function myTimer() {
-        var d = new Date();
-        chrome.runtime.sendMessage({
-            "from": 'options',
-            "cmd": 3,
-            "data": { "TYPE": "chrome.runtime.sendMessage" }
-        }, response => {
-            console.log(response);
-        });
+        sentRuntimeMessage();
+        setTimeout(function() {
+            requestUUID();
+        }, 1000);
     }
 
-    var myVar2 = setInterval(myTimer2, timeDelaySec * 1000);
 
-    function myTimer2() {
+    function requestUUID() {
         reguest(1, { "TYPE": "secure chrome.runtime.sendMessage" })
             .then(response => {
-                console.log("CONTENT requested UDID:", response);
+                console.log("CALLBACK:");
+                console.log(response);
             })
             .catch(e => {
                 console.log(e);
@@ -44,10 +39,22 @@
     }
 
 
+    function sentRuntimeMessage() {
+        chrome.runtime.sendMessage({
+            "from": 'options',
+            "cmd": 3,
+            "data": { "TYPE": "chrome.runtime.sendMessage" }
+        }, response => {
+            console.log("CALLBACK:");
+            console.log(response);
+        });
+    }
+
+
     //sending messages
     var selfid =
         "kndpglafofpainnmogckdkmfbimanbeh"; //for shiped PEM
-        // "fakieblpcehflecaegeonegkaaedcdhk";
+    // "fakieblpcehflecaegeonegkaaedcdhk";
 
     function reguest(cmd, data) {
         return new Promise((resolve, reject) => {
@@ -105,7 +112,7 @@
     });
 
     chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
-        console.log("runtime.onMessageExternal");
+        console.log("OPTIONS: runtime.onMessageExternal");
         console.log(request);
         if (request.from == "background") {
             backgtound_rm.classList.toggle("flash");
@@ -118,6 +125,6 @@
         } else {
             undef_rm.classList.toggle("flash");
         }
-        return true;
+        return true; //sync or async mode
     });
 })();

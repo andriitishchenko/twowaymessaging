@@ -16,11 +16,15 @@
         var d = new Date();
 
         console.log(str);
-        messageToContent("POST", { "id": thisID });
+        messageToContent();
+        
+        setTimeout(function() {
+            sendToActiveTab();
+        }, 500);
 
         setTimeout(function() {
-            messageToContent2("POST", { "id2": thisID });
-        }, 500);
+            sendToAllTabs();
+        }, 1000);
     }
 
     //utils
@@ -33,35 +37,13 @@
     }
 
     //send message to all
-    function messageToContent(type, json) {
+    function messageToContent() {
         chrome.runtime.sendMessage({
             from: 'background',
             subject: 'chrome.runtime.sendMessage',
-            type: type,
-            json: json
+            type: "POST TO RUNTIME" 
         });
     }
-
-    //send message to active tab 
-    function messageToContent2(data, json) {
-        //switch focus to other window to test this type of messages
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            if (tabs.length == 0) {
-                console.log("Chnage focus to other Chromium tab!");
-                return;
-            }
-            chrome.tabs.sendMessage(tabs[0].id, {
-                from: 'background2',
-                subject: 'chrome.tabs.query',
-                data: data,
-                json: json
-            }, response => {
-                console.log(response);
-            });
-        });
-    }
-
-
 
     // retriving messages from WEB Page, Content and 
     // cases when specified extension ID as reciever
@@ -78,7 +60,7 @@
                     case cmd.GETUUIDCALLBACK:
                         getUUID(sendResponse);
                     case cmd.SENTMSG:
-                        sendResponse({ "from_background": "onMessageExternal" });
+                        sendResponse({ "from_background": "onMessageExternal",type: "CALLBACK"});
                         break;
                         break;
                     default:
@@ -86,7 +68,7 @@
                 }
             }
             if (sendResponse) {
-                sendResponse({ "from_background": "onMessageExternal" });
+                sendResponse({ "from_background": "onMessageExternal",type: "CALLBACK"});
             }
             return true;
         });
@@ -116,17 +98,34 @@
 
     function getUUID(callback) {
         callback(thisID);
+    }
+
+    function sendToActiveTab(){
         //send message to last active
         chrome.tabs.query({
             'active': true,
             'lastFocusedWindow': true
         }, tabs => {
+            if (tabs.length == 0) {
+                console.log("Chnage focus to other Chromium tab!");
+                return;
+            }
             console.log(tabs);
-            chrome.tabs.sendMessage(tabs[0].id, {from: 'from_background', subject: "chrome.tabs.sendMessage", type: "POST" }, r => {
+            chrome.tabs.sendMessage(tabs[0].id, {from: 'background2', subject: "chrome.tabs.sendMessage", type: "POST TO ACTIVE" }, r => {
                 console.log(r);
             });
         });
-        return;
+    }
+
+    function sendToAllTabs(){
+        chrome.tabs.query({}, 
+            tabs => {
+                for (let tab of tabs) {
+                     chrome.tabs.sendMessage(tab.id, {from: 'background2', subject: "chrome.tabs.sendMessage", type: "POST BROADCAST" }, r => {
+                        console.log(r);
+                    });
+                }
+        });
     }
 
 })();
