@@ -11,7 +11,7 @@ To make it works its requaried to edit manifest and specify the https://whitelis
 
 # How to
 
-1) install crx
+1) install crx or load unpached extension (dont forget to change the extension ID in js files in sendMessage)
 
 2) open https://localhost, there are added 3 buttons at the top
 
